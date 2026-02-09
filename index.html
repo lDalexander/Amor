@@ -10,21 +10,29 @@
 <body>
 
     <div id="start-screen" class="start-screen">
-        <div class="pulse-heart" onclick="iniciarAnimacion()">❤️</div>
-        <p>Haz clic en el corazón</p>
+        <div class="pulse-heart" onclick="iniciarSecuencia()">❤️</div>
+        <p class="click-text">Click en Mí...</p>
     </div>
 
-    <div id="main-content" class="container hidden">
-        <h1 id="titulo" class="title typewriter"></h1>
-        <p id="subtitulo" class="subtitle typewriter"></p>
+    <div id="main-container" class="main-container">
         
-        <div id="contador" class="timer hidden">Cargando...</div>
+        <div id="text-group" class="text-group hidden-text">
+            <h1 id="titulo" class="title"></h1>
+            <p id="subtitulo" class="subtitle"></p>
+            
+            <div id="timer-container" class="timer-container hidden-element">
+                <div id="contador" class="timer">Cargando...</div>
+            </div>
 
-        <p id="mensaje-final" class="message typewriter"></p>
+            <p id="mensaje-final" class="message"></p>
+        </div>
 
-        <div id="tree-container" class="tree-container hidden">
-            <div class="trunk"></div>
-            <div class="leaves" id="heart-leaves"></div>
+        <div id="tree-wrapper" class="tree-wrapper centered">
+            <div class="tree-container">
+                <div id="trunk" class="trunk hidden-element"></div>
+                <div id="branches" class="branches hidden-element"></div>
+                <div class="leaves" id="heart-leaves"></div>
+            </div>
         </div>
     </div>
 
