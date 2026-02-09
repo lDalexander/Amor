@@ -1,41 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti ❤️</title>
+    <title>Para mi Amor</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Pacifico&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
-    <div id="start-screen" class="start-screen">
-        <div class="pulse-heart" onclick="iniciarSecuencia()">❤️</div>
-        <p class="click-text">Click en Mí...</p>
+    <!-- Botón de Inicio: Corazón Palpitante -->
+    <div id="start-screen">
+        <div class="heart-btn" id="start-btn">
+            ❤️
+            <span class="click-hint">Click Me</span>
+        </div>
     </div>
 
-    <div id="main-container" class="main-container">
-        
-        <div id="text-group" class="text-group hidden-text">
-            <h1 id="titulo" class="title"></h1>
-            <p id="subtitulo" class="subtitle"></p>
-            
-            <div id="timer-container" class="timer-container hidden-element">
-                <div id="contador" class="timer">Cargando...</div>
+    <!-- Canvas para el Árbol -->
+    <canvas id="tree-canvas"></canvas>
+
+    <!-- Tarjeta (Oculta al inicio) -->
+    <div id="card" class="card hidden">
+        <div class="card-content">
+            <h1 class="card-title">Para el amor de mi vida:</h1>
+            <p class="card-body">
+                "Si pudiera elegir un lugar seguro, sería a tu lado. Cuanto más tiempo estoy contigo, más te amo."
+            </p>
+            <p class="card-footer">— I Love You! —</p>
+
+            <div class="timer-container">
+                <p class="timer-label">Mi amor por ti comenzó hace...</p>
+                <div id="timer" class="timer">Cargando...</div>
+                <p class="timer-label">Y sigue creciendo cada día más</p>
+
             </div>
 
-            <p id="mensaje-final" class="message"></p>
-        </div>
-
-        <div id="tree-wrapper" class="tree-wrapper centered">
-            <div class="tree-container">
-                <div id="trunk" class="trunk hidden-element"></div>
-                <div id="branches" class="branches hidden-element"></div>
-                <div class="leaves" id="heart-leaves"></div>
-            </div>
+            <!-- Botón opcional para ir a la galería -->
+            <a href="Karolina/index.html" class="gallery-link">Ver Nuestro Álbum <i
+                    class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

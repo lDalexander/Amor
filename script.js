@@ -1,142 +1,229 @@
-// ==========================================
-// CONFIGURACIÓN: CAMBIA ESTA FECHA
-const fechaInicio = new Date(2023, 1, 14, 18, 00); // Año, Mes-1, Día, Hora, Min
-// ==========================================
-
-const textoTitulo = "Para el amor de mi vida";
-const textoSubtitulo = "Mi amor por ti comenzó hace...";
-const textoMensaje = "Y cada día crece más, como este árbol.";
-
-let secuenciaIniciada = false;
-
-function iniciarSecuencia() {
-    if (secuenciaIniciada) return;
-    secuenciaIniciada = true;
-
-    // 1. Ocultar pantalla de inicio
+document.addEventListener('DOMContentLoaded', () => {
+    const startDate = new Date('2025-02-14T00:00:00');
+    const startBtn = document.getElementById('start-btn');
     const startScreen = document.getElementById('start-screen');
-    startScreen.style.opacity = '0';
-    setTimeout(() => startScreen.style.display = 'none', 800);
+    const card = document.getElementById('card');
+    const canvas = document.getElementById('tree-canvas');
+    const ctx = canvas.getContext('2d');
 
-    // 2. Iniciar animación del Tronco
-    const trunk = document.getElementById('trunk');
-    trunk.classList.remove('hidden-element');
-    trunk.classList.add('grow-trunk');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    // 3. Iniciar animación de las Hojas (después de que crezca el tronco)
-    setTimeout(() => {
-        crearHojasFrondosas();
-    }, 1500); // Espera 1.5s a que el tronco termine
+    let particles = [];
+    let animationId;
 
-    // 4. Mover el árbol y Mostrar el Texto (después de que el árbol se llene)
-    setTimeout(() => {
-        // Mover árbol a la derecha y mostrar contenedor de texto
-        document.getElementById('text-group').classList.add('show-text-group');
-        
-        // Iniciar secuencia de textos
+    startBtn.addEventListener('click', () => {
+        startScreen.classList.add('hidden');
         setTimeout(() => {
-            escribirTexto('titulo', textoTitulo, 80, () => {
-                escribirTexto('subtitulo', textoSubtitulo, 70, () => {
-                    // Mostrar contador
-                    document.getElementById('timer-container').classList.remove('hidden-element');
-                    document.getElementById('timer-container').classList.add('visible');
-                    actualizarContador();
-                    setInterval(actualizarContador, 1000);
+            startScreen.style.display = 'none';
+            startAnimation();
+        }, 1000);
+    });
 
-                    // Último mensaje y hojas cayendo
-                    escribirTexto('mensaje-final', textoMensaje, 70, () => {
-                        setInterval(crearHojaCayendo, 1000);
-                    });
+    function startAnimation() {
+        const startX = canvas.width / 2;
+        const startY = canvas.height;
+        const trunkLength = 150;
+        const trunkThickness = 20;
+
+        // Dibuvamos el tronco base
+        // Iniciamos contador de ramas activas para saber cuándo terminar
+        activeBranches = 1;
+        drawBranch(startX, startY, trunkLength, 0, trunkThickness, 0);
+    }
+
+    let activeBranches = 0;
+
+    function drawBranch(x, y, len, angle, width, depth) {
+        ctx.beginPath();
+        ctx.save();
+        ctx.strokeStyle = "#5D4037"; // Marrón madera
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.translate(x, y);
+        ctx.rotate(angle * Math.PI / 180);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -len);
+        ctx.stroke();
+        ctx.restore();
+
+        // Calcular fin de la rama actual para la siguiente
+        const endX = x + len * Math.sin(angle * Math.PI / 180);
+        const endY = y - len * Math.cos(angle * Math.PI / 180);
+
+        // Condición de parada para el fractal de ramas
+        // Hacemos el árbol más compacto (depth 5 en vez de 6 si se ve muy grande, pero 6 está bien con ángulo menor)
+        if (depth > 5 || len < 15) {
+            activeBranches--;
+            if (activeBranches <= 0) {
+                setTimeout(bloomHeartAttributes, 500); // Pequeña pausa dramática antes de florecer
+            }
+            return;
+        }
+
+        // Ramificación simple para el soporte
+        setTimeout(() => {
+            // Angulos ajustados: DE 25 a 15 para que sea más "cerrado" y no tan "fuera"
+            const newDepth = depth + 1;
+
+            // Incrementamos por las 2 nuevas ramas que nacerán
+            activeBranches += 2;
+
+            drawBranch(endX, endY, len * 0.75, angle - 15, width * 0.7, newDepth);
+            drawBranch(endX, endY, len * 0.75, angle + 15, width * 0.7, newDepth);
+
+            // Decrementamos la rama actual que ya "dio a luz"
+            activeBranches--;
+            if (activeBranches <= 0) {
+                setTimeout(bloomHeartAttributes, 500);
+            }
+        }, 150);
+    }
+
+    let blooming = false;
+    function bloomHeartAttributes() {
+        if (blooming) return;
+        blooming = true;
+
+        // Configuracion del Corazón Gigante
+        const centerX = canvas.width / 2;
+        // Subimos el corazón para que tape las ramas superiores (Y menor es más arriba)
+        const centerY = canvas.height - 380;
+        const heartScale = 15; // Más grande para cubrir todo el follaje
+        const totalLeaves = 2500; // Aún más denso para tapar huecos
+
+        // Efecto de brillo para las hojas
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "rgba(255, 105, 180, 0.5)"; // Resplandor rosa
+
+        let createdLeaves = 0;
+
+        function createLeafBatch() {
+            // Generar menos hojas por frame para que la animación dure más (aprox 3-4 seg)
+            for (let i = 0; i < 8; i++) {
+                if (createdLeaves >= totalLeaves) break;
+
+                // Formula del corazón paramétrica
+                // Aleatoriedad para rellenar el interior:
+                // Usamos sqrt(random) para distribución uniforme en área circular, aplica similar aquí
+                const t = Math.random() * Math.PI * 2;
+                // Radio variable para rellenar, más denso en bordes o uniforme
+                // r se distribuye para llenar el volumen
+                let r = Math.sqrt(Math.random());
+                // A veces queremos que el borde esté más definido
+                if (Math.random() < 0.3) r = 0.9 + Math.random() * 0.1; // 30% en el borde
+
+                // Formula:
+                // x = 16 sin^3 t
+                // y = 13 cos t - 5 cos 2t - 2 cos 3t - cos 4t
+                const xNorm = 16 * Math.pow(Math.sin(t), 3);
+                const yNorm = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+
+                // Posición final
+                const x = centerX + xNorm * heartScale * r;
+                const y = centerY - yNorm * heartScale * r; // Menos Y porque canvas Y crece abajo
+
+                particles.push({
+                    x: x,
+                    y: y,
+                    targetSize: Math.random() * 8 + 4,
+                    currentSize: 0,
+                    color: getRandomPinkColor(),
+                    rotation: Math.random() * Math.PI * 2
                 });
-            });
-        }, 1000); // Espera 1s después de moverse para empezar a escribir
-    }, 4000); // Espera 4s en total para que el árbol esté listo
-}
+                createdLeaves++;
+            }
 
-// Función de Máquina de Escribir
-function escribirTexto(id, text, speed, callback) {
-    let i = 0;
-    const element = document.getElementById(id);
-    element.classList.add('typewriter');
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        } else {
-            element.classList.remove('typewriter');
-            if (callback) callback();
+            if (createdLeaves < totalLeaves) {
+                requestAnimationFrame(createLeafBatch);
+            } else {
+                // Terminado de generar, mostrar tarjeta pronto
+                setTimeout(showCard, 1000);
+            }
+        }
+        createLeafBatch();
+        animateLeaves();
+    }
+
+    function getRandomPinkColor() {
+        const colors = [
+            '#ff4d6d', // Rosa fuerte
+            '#c9184a', // Rojo oscuro
+            '#ff758f', // Rosa claro
+            '#ffb3c1', // Rosa pastel
+            '#800f2f'  // Vino
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function animateLeaves() {
+        // Render loop para las hojas: Crecen suavemente (pop-in)
+        // No limpiamos el canvas completo para no borrar el tronco
+        // TRUCO: Solo animamos "haciendo crecer" las hojas
+        // Como no podemos borrar sin borrar el tronco, asumimos que solo crecen y se quedan.
+        // Si quisieramos movimiento (sway), necesitariamos redibujar el tronco o usar capas.
+        // Dado que el tronco ya se dibujó en el canvas, dibujaremos hojas encima.
+
+        let active = false;
+        particles.forEach(p => {
+            if (p.currentSize < p.targetSize) {
+                p.currentSize += 0.2; // Velocidad de crecimiento
+                drawHeartShape(p.x, p.y, p.currentSize, p.color, p.rotation);
+                active = true;
+            }
+        });
+
+        if (active) {
+            requestAnimationFrame(animateLeaves);
         }
     }
-    type();
-}
 
-// Contador de Tiempo
-function actualizarContador() {
-    const diff = new Date() - fechaInicio;
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((diff % (1000 * 60)) / 1000);
-    document.getElementById("contador").innerText = `${d} Días ${h}h ${m}m ${s}s`;
-}
-
-// Crear Hojas en forma de Corazón (Copa del árbol)
-function crearHojasFrondosas() {
-    const contenedor = document.getElementById("heart-leaves");
-    const colores = ["#d90429", "#ef233c", "#ff4d6d", "#ff758f", "#ff8fa3"];
-    
-    for (let i = 0; i < 200; i++) {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        
-        // Lógica para formar un corazón gigante con las hojas
-        const angle = Math.random() * Math.PI * 2;
-        const r = Math.sqrt(Math.random()) * 180; // Radio máximo
-        // Fórmulas paramétricas aproximadas para un corazón
-        const x = r * 1.2 * Math.pow(Math.sin(angle), 3);
-        const y = -r * (0.8 * Math.cos(angle) - 0.3 * Math.cos(2*angle) - 0.1 * Math.cos(3*angle) - 0.05 * Math.cos(4*angle));
-
-        heart.style.bottom = `${y + 350}px`; // Elevar la copa
-        heart.style.left = `calc(50% + ${x}px)`;
-        
-        const color = colores[Math.floor(Math.random() * colores.length)];
-        const scale = Math.random() * 0.8 + 0.4;
-        
-        heart.style.setProperty('--scale', scale);
-        heart.style.backgroundColor = color;
-        
-        const style = document.createElement('style');
-        style.innerHTML = `.heart:nth-child(${i+1})::before, .heart:nth-child(${i+1})::after { background-color: ${color}; }`;
-        document.head.appendChild(style);
-
-        // Retraso aleatorio para que "florezcan"
-        setTimeout(() => {
-            heart.classList.add('bloom');
-        }, Math.random() * 2000);
-
-        contenedor.appendChild(heart);
+    function drawHeartShape(x, y, size, color, rotation) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        // Dibujo de un corazón pequeño (pétalo)
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+        ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+        ctx.fill();
+        ctx.restore();
     }
-}
 
-// Crear Hojas Cayendo
-function crearHojaCayendo() {
-    const contenedor = document.getElementById("tree-container");
-    const colores = ["#ff4d6d", "#ff758f"];
-    const heart = document.createElement("div");
-    heart.classList.add("falling-heart");
+    function showCard() {
+        card.classList.remove('hidden');
+        card.style.display = 'block';
+        // Reflow
+        void card.offsetWidth;
+        card.classList.add('visible');
+    }
 
-    const color = colores[Math.floor(Math.random() * colores.length)];
-    heart.style.backgroundColor = color;
-    heart.style.left = `calc(50% + ${Math.random() * 300 - 150}px)`;
+    function updateTimer() {
+        const now = new Date();
+        const diff = now - startDate;
 
-    const style = document.createElement('style');
-    style.innerHTML = `.falling-heart:last-child::before, .falling-heart:last-child::after { background-color: ${color}; }`;
-    document.head.appendChild(style);
+        if (diff < 0) {
+            document.getElementById('timer').innerText = "Próximamente...";
+            return;
+        }
 
-    contenedor.appendChild(heart);
-    setTimeout(() => { heart.remove(); style.remove(); }, 5000);
-}
-// Iniciar
-crearArbol();
-actualizarContador();
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('timer').innerText =
+            `${days} Días, ${hours} Hs, ${minutes} Min, ${seconds} Seg`;
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        // Reiniciar si se cambia tamaño es complejo, mejor dejarlo o recargar
+    });
+});

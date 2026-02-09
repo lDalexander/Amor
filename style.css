@@ -1,136 +1,236 @@
-/* Configuración general */
+/* Fonts */
+:root {
+    --primary-color: #c9184a;
+    /* Deep Pink */
+    --secondary-color: #ff4d6d;
+    /* Lighter Pink */
+    --accent-color: #ffb3c1;
+    /* Soft Pink */
+    --text-color: #880d1e;
+    /* Darker Red/Brown */
+    --bg-color: #fdfbf7;
+    /* Cream */
+    --font-heading: 'Pacifico', cursive;
+    --font-body: 'Dancing Script', cursive;
+}
+
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #ffe6e9, #fff0f3);
-    font-family: 'Nunito', sans-serif;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color);
+    overflow: hidden;
+    /* No scrollbars */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
+    font-family: var(--font-body);
 }
 
-/* Pantalla de inicio */
-.start-screen {
+/* Escena Inicial: Corazón Palpitante */
+#start-screen {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    background-color: #ffe6e9; z-index: 100;
-    transition: opacity 0.8s ease-out;
-}
-.pulse-heart { font-size: 6rem; cursor: pointer; animation: pulse 1.5s infinite; }
-.click-text { font-family: 'Dancing Script', cursive; font-size: 2rem; color: #d63384; margin-top: 20px; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-/* Contenedor Principal */
-.main-container {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: center; /* Inicialmente centrado */
-    width: 90%; max-width: 900px;
-    transition: all 1s ease-in-out;
+    /* Corazón abajo */
+    padding-bottom: 50px;
+    z-index: 100;
+    transition: opacity 1s ease-out;
 }
 
-/* Grupo de Texto */
-.text-group {
-    flex: 1;
-    text-align: left;
-    padding-right: 30px;
+#start-screen.hidden {
     opacity: 0;
-    transform: translateX(-50px); /* Empieza un poco a la izquierda */
-    transition: all 1s ease-in-out;
+    pointer-events: none;
 }
-/* Clase para mostrar el texto y mover el árbol */
-.show-text-group {
+
+.heart-btn {
+    font-size: 5rem;
+    cursor: pointer;
+    animation: heartbeat 1.5s infinite ease-in-out;
+    position: relative;
+    user-select: none;
+    transition: transform 0.3s;
+}
+
+.heart-btn:hover {
+    transform: scale(1.1);
+}
+
+.click-hint {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    color: var(--text-color);
+    opacity: 0;
+    transition: opacity 0.5s;
+    font-family: var(--font-heading);
+}
+
+.heart-btn:hover .click-hint {
     opacity: 1;
-    transform: translateX(0);
 }
 
-/* Clases de utilidad */
-.hidden-element { opacity: 0; }
-.visible { opacity: 1; }
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
 
-/* Textos y Máquina de Escribir */
-.title { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: #d63384; margin-bottom: 15px; min-height: 1.2em; }
-.subtitle, .message { color: #555; font-size: 1.2rem; min-height: 1.2em; }
-.typewriter {
-    border-right: 3px solid rgba(214, 51, 132, 0.7);
-    white-space: nowrap; overflow: hidden; display: inline-block;
-    animation: blink-caret 0.75s step-end infinite;
+    14% {
+        transform: scale(1.3);
+    }
+
+    28% {
+        transform: scale(1);
+    }
+
+    42% {
+        transform: scale(1.3);
+    }
+
+    70% {
+        transform: scale(1);
+    }
 }
-@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(214, 51, 132, 0.7); } }
 
-/* Contador */
-.timer-container { margin: 30px 0; transition: opacity 1s ease; }
+/* Canvas para Árbol */
+#tree-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /* Detrás de la tarjeta */
+}
+
+/* Tarjeta (Glassmorphism) */
+.card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.75);
+    /* Semi-transparent */
+    backdrop-filter: blur(10px);
+    /* Glass effect */
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(201, 24, 74, 0.2);
+    /* Sutil sombra rosa */
+    padding: 2rem;
+    text-align: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 2s ease-in;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.card.visible {
+    opacity: 1;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%);
+    }
+
+    50% {
+        transform: translate(-50%, -55%);
+    }
+}
+
+.card-title {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    font-size: 1.8rem;
+    color: #4a4a4a;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.card-footer {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    border-top: 1px solid var(--accent-color);
+    padding-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Timer */
+.timer-container {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.timer-label {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
 .timer {
-    font-size: 1.5rem; font-weight: bold; color: #a81d56;
-    background: rgba(255, 255, 255, 0.8); padding: 15px 30px;
-    border-radius: 30px; display: inline-block;
-    box-shadow: 0 5px 20px rgba(214, 51, 132, 0.2);
+    font-family: 'Courier New', monospace;
+    /* Monospace for numbers */
+    font-size: 1.2rem;
+    color: var(--text-color);
+    font-weight: bold;
 }
 
-/* --- EL ÁRBOL --- */
-.tree-wrapper {
-    flex: 1;
-    display: flex; justify-content: center;
-    transition: all 1s ease-in-out;
-}
-/* Cuando el texto aparece, el árbol se ajusta */
-.text-group.show-text-group + .tree-wrapper {
-    flex: 0 0 auto; /* Deja de ser flexible para dar espacio al texto */
-}
-
-.tree-container {
-    position: relative; width: 400px; height: 500px;
-    /* border: 1px solid red; Descomenta para ver el área del árbol */
-}
-
-/* Tronco Animado */
-.trunk {
-    position: absolute; bottom: 0; left: 50%;
-    width: 20px; height: 250px;
-    background: linear-gradient(to right, #8B4513, #A0522D);
-    border-radius: 10px 10px 0 0;
-    transform-origin: bottom center;
-    transform: translateX(-50%) scaleY(0); /* Empieza aplastado */
-}
-.grow-trunk { animation: grow-trunk-anim 1.5s forwards ease-out; }
-@keyframes grow-trunk-anim { to { transform: translateX(-50%) scaleY(1); } }
-
-/* Ramas (simplificadas para la animación) */
-.branches {
-    position: absolute; bottom: 250px; left: 50%;
-    width: 2px; height: 2px;
+/* Enlace al álbum */
+.gallery-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    background: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    transition: background 0.3s;
+    box-shadow: 0 5px 15px rgba(201, 24, 74, 0.3);
 }
 
-/* Hojas de Corazón */
-.heart {
-    position: absolute; width: 24px; height: 24px;
-    transform: rotate(-45deg) scale(0); opacity: 0.9;
-    transition: transform 0.8s ease-out;
+.gallery-link:hover {
+    background: var(--text-color);
 }
-.heart::before, .heart::after {
-    content: ""; position: absolute; width: 24px; height: 24px; border-radius: 50%;
-}
-.heart::before { top: -12px; left: 0; }
-.heart::after { left: 12px; top: 0; }
 
-.bloom { transform: rotate(-45deg) scale(var(--scale)); }
+/* Responsividad */
+@media (max-width: 600px) {
+    .card {
+        padding: 1.5rem;
+        width: 85%;
+    }
 
-/* Hojas Cayendo */
-.falling-heart {
-    position: absolute; width: 16px; height: 16px;
-    transform: rotate(-45deg); opacity: 0; z-index: 1;
-    animation: fall-anim 5s linear forwards;
-}
-.falling-heart::before, .falling-heart::after {
-    content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%;
-}
-.falling-heart::before { top: -8px; left: 0; }
-.falling-heart::after { left: 8px; top: 0; }
-@keyframes fall-anim {
-    0% { top: 100px; opacity: 1; transform: rotate(-45deg) translateX(0) rotateZ(0); }
-    100% { top: 550px; opacity: 0; transform: rotate(45deg) translateX(50px) rotateZ(360deg); }
+    .card-title {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        font-size: 1.4rem;
+    }
+
+    .heart-btn {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
 }
