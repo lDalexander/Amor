@@ -1,138 +1,136 @@
-// ==========================================
-// CONFIGURACIÓN: CAMBIA ESTA FECHA POR LA SUYA
-// Formato: Año, Mes (Enero=0, Febrero=1...), Día, Hora, Minutos
-const fechaInicio = new Date(2023, 1, 14, 18, 00); 
-// ==========================================
-
-// Textos para la máquina de escribir
-const textoTitulo = "Para el amor de mi vida";
-const textoSubtitulo = "Mi amor por ti comenzó hace...";
-const textoMensaje = "Y cada segundo te amo más.";
-
-let appIniciada = false;
-
-function iniciarAnimacion() {
-    if (appIniciada) return;
-    appIniciada = true;
-
-    // 1. Ocultar pantalla de inicio
-    document.getElementById('start-screen').style.opacity = '0';
-    setTimeout(() => {
-        document.getElementById('start-screen').style.display = 'none';
-        // 2. Mostrar contenedor principal
-        document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('main-content').classList.add('visible');
-        
-        // 3. Iniciar secuencia de textos
-        escribirTexto('titulo', textoTitulo, 100, () => {
-            escribirTexto('subtitulo', textoSubtitulo, 80, () => {
-                // 4. Mostrar contador y mensaje final
-                document.getElementById('contador').classList.remove('hidden');
-                document.getElementById('contador').classList.add('visible');
-                actualizarContador();
-                setInterval(actualizarContador, 1000);
-                
-                escribirTexto('mensaje-final', textoMensaje, 80, () => {
-                    // 5. Finalmente, ¡aparece el árbol!
-                    document.getElementById('tree-container').classList.remove('hidden');
-                    document.getElementById('tree-container').classList.add('visible');
-                    crearArbolFrondoso();
-                    // Empezar a dejar caer hojas después de que el árbol florezca
-                    setTimeout(() => setInterval(crearHojaCayendo, 800), 2000);
-                });
-            });
-        });
-    }, 800);
+/* Configuración general */
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #ffe6e9, #fff0f3);
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
 }
 
-// Función para efecto de máquina de escribir
-function escribirTexto(elementoId, texto, velocidad, callback) {
-    let i = 0;
-    const elemento = document.getElementById(elementoId);
-    elemento.innerHTML = ""; // Limpiar
-    function escribir() {
-        if (i < texto.length) {
-            elemento.innerHTML += texto.charAt(i);
-            i++;
-            setTimeout(escribir, velocidad);
-        } else {
-            // Quitar el cursor parpadeante al terminar
-            elemento.classList.remove('typewriter');
-            if (callback) callback();
-        }
-    }
-    escribir();
+/* Pantalla de inicio */
+.start-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    background-color: #ffe6e9; z-index: 100;
+    transition: opacity 0.8s ease-out;
+}
+.pulse-heart { font-size: 6rem; cursor: pointer; animation: pulse 1.5s infinite; }
+.click-text { font-family: 'Dancing Script', cursive; font-size: 2rem; color: #d63384; margin-top: 20px; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+/* Contenedor Principal */
+.main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Inicialmente centrado */
+    width: 90%; max-width: 900px;
+    transition: all 1s ease-in-out;
 }
 
-function actualizarContador() {
-    const ahora = new Date();
-    const diferencia = ahora - fechaInicio;
-    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-    document.getElementById("contador").innerText = 
-        `${dias} Días ${horas}h ${minutos}m ${segundos}s`;
+/* Grupo de Texto */
+.text-group {
+    flex: 1;
+    text-align: left;
+    padding-right: 30px;
+    opacity: 0;
+    transform: translateX(-50px); /* Empieza un poco a la izquierda */
+    transition: all 1s ease-in-out;
+}
+/* Clase para mostrar el texto y mover el árbol */
+.show-text-group {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-// Nuevo Árbol Frondoso
-function crearArbolFrondoso() {
-    const contenedor = document.getElementById("heart-leaves");
-    const colores = ["#ff4d6d", "#c9184a", "#ff758f", "#ff8fa3", "#e63946"];
-    
-    // Crear MUCHAS más hojas (150 en lugar de 60)
-    for (let i = 0; i < 150; i++) {
-        const corazon = document.createElement("div");
-        corazon.classList.add("heart");
-        
-        // Usar coordenadas polares para una copa más redonda y natural
-        const angle = Math.random() * Math.PI * 2; // Ángulo aleatorio
-        const radius = Math.random() * 100; // Radio aleatorio
-        const x = Math.cos(angle) * radius * 1.2; // Dispersión horizontal
-        const y = Math.sin(angle) * radius * 0.8 + 180; // Dispersión vertical + altura base
+/* Clases de utilidad */
+.hidden-element { opacity: 0; }
+.visible { opacity: 1; }
 
-        corazon.style.bottom = `${y}px`;
-        corazon.style.left = `calc(50% + ${x}px)`;
-        
-        // Color, tamaño y rotación aleatorios
-        const color = colores[Math.floor(Math.random() * colores.length)];
-        const scale = Math.random() * 0.6 + 0.5; // Escala entre 0.5 y 1.1
-        const rotation = Math.random() * 90 - 45; // Rotación ligera
+/* Textos y Máquina de Escribir */
+.title { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: #d63384; margin-bottom: 15px; min-height: 1.2em; }
+.subtitle, .message { color: #555; font-size: 1.2rem; min-height: 1.2em; }
+.typewriter {
+    border-right: 3px solid rgba(214, 51, 132, 0.7);
+    white-space: nowrap; overflow: hidden; display: inline-block;
+    animation: blink-caret 0.75s step-end infinite;
+}
+@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: rgba(214, 51, 132, 0.7); } }
 
-        corazon.style.setProperty('--scale', scale);
-        corazon.style.transform = `rotate(${rotation}deg) scale(0)`;
-        
-        corazon.style.backgroundColor = color;
-        const style = document.createElement('style');
-        style.innerHTML = `.heart:nth-child(${i+1})::before, .heart:nth-child(${i+1})::after { background-color: ${color}; }`;
-        document.head.appendChild(style);
-
-        corazon.style.animationDelay = `${Math.random() * 3}s`; // Aparecen en 3 segundos
-
-        contenedor.appendChild(corazon);
-    }
+/* Contador */
+.timer-container { margin: 30px 0; transition: opacity 1s ease; }
+.timer {
+    font-size: 1.5rem; font-weight: bold; color: #a81d56;
+    background: rgba(255, 255, 255, 0.8); padding: 15px 30px;
+    border-radius: 30px; display: inline-block;
+    box-shadow: 0 5px 20px rgba(214, 51, 132, 0.2);
 }
 
-// Función para crear hojas que caen
-function crearHojaCayendo() {
-    const contenedor = document.getElementById("tree-container");
-    const colores = ["#ff4d6d", "#ff758f"];
-    const hoja = document.createElement("div");
-    hoja.classList.add("falling-heart");
+/* --- EL ÁRBOL --- */
+.tree-wrapper {
+    flex: 1;
+    display: flex; justify-content: center;
+    transition: all 1s ease-in-out;
+}
+/* Cuando el texto aparece, el árbol se ajusta */
+.text-group.show-text-group + .tree-wrapper {
+    flex: 0 0 auto; /* Deja de ser flexible para dar espacio al texto */
+}
 
-    const color = colores[Math.floor(Math.random() * colores.length)];
-    hoja.style.backgroundColor = color;
-    hoja.style.left = `calc(50% + ${Math.random() * 100 - 50}px)`; // Posición inicial horizontal
+.tree-container {
+    position: relative; width: 400px; height: 500px;
+    /* border: 1px solid red; Descomenta para ver el área del árbol */
+}
 
-    const style = document.createElement('style');
-    style.innerHTML = `.falling-heart:last-child::before, .falling-heart:last-child::after { background-color: ${color}; }`;
-    document.head.appendChild(style);
+/* Tronco Animado */
+.trunk {
+    position: absolute; bottom: 0; left: 50%;
+    width: 20px; height: 250px;
+    background: linear-gradient(to right, #8B4513, #A0522D);
+    border-radius: 10px 10px 0 0;
+    transform-origin: bottom center;
+    transform: translateX(-50%) scaleY(0); /* Empieza aplastado */
+}
+.grow-trunk { animation: grow-trunk-anim 1.5s forwards ease-out; }
+@keyframes grow-trunk-anim { to { transform: translateX(-50%) scaleY(1); } }
 
-    contenedor.appendChild(hoja);
+/* Ramas (simplificadas para la animación) */
+.branches {
+    position: absolute; bottom: 250px; left: 50%;
+    width: 2px; height: 2px;
+}
 
-    // Eliminar la hoja después de que caiga para no llenar la memoria
-    setTimeout(() => {
-        hoja.remove();
-        style.remove();
-    }, 4000);
+/* Hojas de Corazón */
+.heart {
+    position: absolute; width: 24px; height: 24px;
+    transform: rotate(-45deg) scale(0); opacity: 0.9;
+    transition: transform 0.8s ease-out;
+}
+.heart::before, .heart::after {
+    content: ""; position: absolute; width: 24px; height: 24px; border-radius: 50%;
+}
+.heart::before { top: -12px; left: 0; }
+.heart::after { left: 12px; top: 0; }
+
+.bloom { transform: rotate(-45deg) scale(var(--scale)); }
+
+/* Hojas Cayendo */
+.falling-heart {
+    position: absolute; width: 16px; height: 16px;
+    transform: rotate(-45deg); opacity: 0; z-index: 1;
+    animation: fall-anim 5s linear forwards;
+}
+.falling-heart::before, .falling-heart::after {
+    content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+}
+.falling-heart::before { top: -8px; left: 0; }
+.falling-heart::after { left: 8px; top: 0; }
+@keyframes fall-anim {
+    0% { top: 100px; opacity: 1; transform: rotate(-45deg) translateX(0) rotateZ(0); }
+    100% { top: 550px; opacity: 0; transform: rotate(45deg) translateX(50px) rotateZ(360deg); }
 }
