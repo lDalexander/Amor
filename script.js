@@ -1,7 +1,7 @@
 // ==========================================
 // CONFIGURACIÓN: CAMBIA ESTA FECHA POR LA SUYA
 // Formato: Año, Mes (0 = Enero, 1 = Febrero...), Día, Hora, Minutos
-const fechaInicio = new Date(2023, 1, 14, 18, 00); 
+const fechaInicio = new Date(2025, 5, 26, 18, 00); 
 // Ejemplo arriba: 14 de Febrero de 2023 a las 6:00 PM
 // ==========================================
 
