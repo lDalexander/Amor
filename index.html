@@ -9,20 +9,25 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1 class="title">Para el amor de mi vida</h1>
-        <p class="subtitle">Mi amor por ti comenzó hace...</p>
+    <div id="start-screen" class="start-screen">
+        <div class="pulse-heart" onclick="iniciarAnimacion()">❤️</div>
+        <p>Haz clic en el corazón</p>
+    </div>
+
+    <div id="main-content" class="container hidden">
+        <h1 id="titulo" class="title typewriter"></h1>
+        <p id="subtitulo" class="subtitle typewriter"></p>
         
-        <div id="contador" class="timer">Cargando...</div>
+        <div id="contador" class="timer hidden">Cargando...</div>
 
-        <p class="message">Y cada segundo te amo más.</p>
+        <p id="mensaje-final" class="message typewriter"></p>
 
-        <div class="tree-container">
+        <div id="tree-container" class="tree-container hidden">
             <div class="trunk"></div>
             <div class="leaves" id="heart-leaves"></div>
         </div>
     </div>
 
-    <script src="./script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
