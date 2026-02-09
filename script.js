@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationId;
 
     startBtn.addEventListener('click', () => {
-        startScreen.classList.add('hidden');
+        startScreen.classList.add('fade-out'); // Transición suave
         setTimeout(() => {
-            startScreen.style.display = 'none';
+            startScreen.classList.add('hidden'); // Ocultar totalmente (display: none)
+            startScreen.style.display = 'none'; // Refuerzo
             startAnimation();
         }, 1000);
     });
