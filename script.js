@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let createdLeaves = 0;
 
         function createLeafBatch() {
-            // Generar menos hojas por frame para que la animación dure más (aprox 3-4 seg)
-            for (let i = 0; i < 8; i++) {
+            // Generar MÁS hojas por frame para que la animación sea más rápida (aprox 2 seg)
+            for (let i = 0; i < 25; i++) {
                 if (createdLeaves >= totalLeaves) break;
 
                 // Formula del corazón paramétrica
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestAnimationFrame(createLeafBatch);
             } else {
                 // Terminado de generar, mostrar tarjeta pronto
-                setTimeout(showCard, 1000);
+                setTimeout(showCard, 500); // Reducido a medio segundo
             }
         }
         createLeafBatch();
