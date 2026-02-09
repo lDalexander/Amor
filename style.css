@@ -1,0 +1,101 @@
+/* Configuración general */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffe6e9; /* Fondo rosita suave */
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Evita barras de desplazamiento */
+    text-align: center;
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+}
+
+/* Textos */
+.title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5rem;
+    color: #d63384;
+    margin-bottom: 10px;
+}
+
+.subtitle, .message {
+    color: #555;
+    font-size: 1.1rem;
+}
+
+/* El contador de tiempo */
+.timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #a81d56;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* El Árbol */
+.tree-container {
+    position: relative;
+    margin-top: 50px;
+    height: 300px;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.trunk {
+    width: 10px;
+    height: 150px;
+    background-color: #8B4513; /* Marrón tronco */
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+}
+
+/* Hojas en forma de corazón */
+.heart {
+    position: absolute;
+    background-color: #ff4d6d;
+    width: 15px;
+    height: 15px;
+    transform: rotate(-45deg) scale(0); /* Empiezan invisibles */
+    animation: bloom 1s forwards; /* Animación de aparecer */
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #ff4d6d;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -7.5px;
+    left: 0;
+}
+
+.heart::after {
+    left: 7.5px;
+    top: 0;
+}
+
+/* Animación de crecimiento */
+@keyframes bloom {
+    to {
+        transform: rotate(-45deg) scale(1);
+    }
+}
