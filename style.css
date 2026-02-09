@@ -83,6 +83,7 @@ body {
     position: relative;
     user-select: none;
     transition: transform 0.3s;
+    /* Removed relative positioning as hint is now external */
 }
 
 .heart-btn:hover {
@@ -90,19 +91,28 @@ body {
 }
 
 .click-hint {
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2rem;
+    margin-top: 20px;
+    font-size: 1.5rem;
     color: var(--text-color);
-    opacity: 0;
-    transition: opacity 0.5s;
     font-family: var(--font-heading);
+    white-space: nowrap;
+    animation: pulseText 2s infinite ease-in-out;
+    cursor: pointer;
+    /* Indicar que también es clickeable */
 }
 
-.heart-btn:hover .click-hint {
-    opacity: 1;
+@keyframes pulseText {
+
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
 }
 
 @keyframes heartbeat {
